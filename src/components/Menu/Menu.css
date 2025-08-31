@@ -1,3 +1,29 @@
+.custom-navbar {
+  background-color: var(--background-color) !important;
+  color: var(--text-color);
+  font-family: var(--font-family);
+}
+
+.custom-brand {
+  color: var(--secondary-color) !important;
+  font-weight: bold;
+  font-family: var(--font-family);
+}
+
+.custom-nav .nav-link {
+  color: var(--text-color) !important;
+  font-family: var(--font-family);
+}
+.custom-nav .nav-link.active {
+  color: var(--secondary-color) !important;
+}
+
+.custom-logout {
+  border: 1px solid var(--secondary-color) !important;
+  color: var(--secondary-color) !important;
+  background: var(--primary-color) !important;
+  font-family: var(--font-family);
+}
 .menu-container {
   background-color: var(--primary-color) !important;
 }

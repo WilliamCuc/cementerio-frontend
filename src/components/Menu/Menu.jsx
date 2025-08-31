@@ -1,35 +1,47 @@
-import { Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import "./Menu.css";
 
 export default function Menu() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary menu-container">
+      <Navbar expand="lg" className="menu-container custom-navbar">
         <Container fluid>
-          <Navbar.Brand as={Link} to="/dashboard">
+          <Navbar.Brand as={Link} to="/dashboard" className="custom-brand">
             Cementerio Admin
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
-              className="me-auto my-2 my-lg-0"
+              className="me-auto my-2 my-lg-0 custom-nav"
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
               <Nav.Link as={Link} to="/dashboard">
-                Inicio
+                <i className="bi bi-house-door"></i> Inicio
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/difuntos">
-                Difuntos
+                <i className="bi bi-clipboard-x"></i> Difuntos
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/encargados">
-                Encargados
+                <i className="bi bi-person-fill"></i> Encargados
+              </Nav.Link>
+            </Nav>
+            <Nav className="ms-auto">
+              <Nav.Link
+                onClick={handleLogout}
+                className="btn custom-logout ms-2"
+              >
+                <i className="bi bi-box-arrow-right"></i> Cerrar sesión
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
