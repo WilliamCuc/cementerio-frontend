@@ -1,21 +1,5 @@
-// Formatea fecha yyyy-mm-dd o ISO a dd/mm/yyyy
-function formatFecha(fecha) {
-  if (!fecha) return "";
-  // Si es formato ISO, extrae yyyy-mm-dd
-  if (/^\d{4}-\d{2}-\d{2}T/.test(fecha)) {
-    fecha = fecha.slice(0, 10);
-  }
-  // Si está en formato yyyy-mm-dd
-  const partes = fecha.split("-");
-  if (partes.length === 3) {
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-  }
-  // Si está en formato dd/mm/yyyy, lo dejamos igual
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(fecha)) return fecha;
-  return fecha;
-}
+import { formatFecha, toInputDate } from "../../utils/fechas";
 import Alert from "react-bootstrap/Alert";
-import { toInputDate } from "../../utils/fechas";
 import React, { useEffect, useState } from "react";
 import {
   httpGetDifuntos,
