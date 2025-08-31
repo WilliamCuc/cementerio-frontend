@@ -1,17 +1,17 @@
-import { formatFecha, toInputDate } from "../../utils/fechas";
+import "./Encargados.css";
+
 import Alert from "react-bootstrap/Alert";
 import React, { useEffect, useState } from "react";
-import { useCallback } from "react";
 import {
-  httpGetDifuntos,
-  httpCrearDifunto,
-  httpEditarDifunto,
-  httpEliminarDifunto,
+  httpGetEncargados,
+  httpCrearEncargado,
+  httpEditarEncargado,
+  httpEliminarEncargado,
 } from "../../api/config";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-export default function Difuntos() {
+export default function Encargados() {
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -27,37 +27,38 @@ export default function Difuntos() {
     }
   }, [alert.show]);
 
-  const [difuntos, setDifuntos] = useState([]);
+  const [encargados, setEncargados] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [form, setForm] = useState({
-    dif_primer_nombre: "",
-    dif_segundo_nombre: "",
-    dif_primer_apellido: "",
-    dif_segundo_apellido: "",
-    dif_dpi: "",
-    dif_espacios: "",
-    dif_fecha_defuncion: "",
-    dif_fecha_entierro: "",
+    enc_primer_nombre: "",
+    enc_segundo_nombre: "",
+    enc_primer_apellido: "",
+    enc_segundo_apellido: "",
+    enc_telefono_uno: "",
+    enc_telefono_dos: "",
+    enc_dpi: "",
+    enc_direccion: "",
+    enc_panteones: "",
   });
   const [editId, setEditId] = useState(null);
   const [show, setShow] = useState(false);
 
-  const fetchDifuntos = useCallback(
+  const fetchEncargados = React.useCallback(
     async (currentPage = page) => {
       try {
         const offset = (currentPage - 1) * pageSize;
         const res = await fetch(
-          `${httpGetDifuntos}?limit=${pageSize}&offset=${offset}`
+          `${httpGetEncargados}?limit=${pageSize}&offset=${offset}`
         );
         const data = await res.json();
-        setDifuntos(data.data);
+        setEncargados(data.data);
         setTotal(data.total);
       } catch (error) {
         setAlert({
           show: true,
-          message: "Error al cargar difuntos" + error,
+          message: "Error al cargar encargados" + error,
           variant: "danger",
         });
       }
@@ -66,8 +67,8 @@ export default function Difuntos() {
   );
 
   useEffect(() => {
-    fetchDifuntos(page);
-  }, [page, pageSize, fetchDifuntos]);
+    fetchEncargados(page);
+  }, [page, pageSize, fetchEncargados]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -75,45 +76,42 @@ export default function Difuntos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = editId ? `${httpEditarDifunto}/${editId}` : httpCrearDifunto;
+    const url = editId
+      ? `${httpEditarEncargado}/${editId}`
+      : httpCrearEncargado;
     const method = editId ? "PUT" : "POST";
-    // Enviamos las fechas tal cual están en el input
-    const formToSend = {
-      ...form,
-      dif_fecha_defuncion: form.dif_fecha_defuncion,
-      dif_fecha_entierro: form.dif_fecha_entierro,
-    };
     try {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formToSend),
+        body: JSON.stringify(form),
       });
       if (res.ok) {
         setAlert({
           show: true,
           message: editId
-            ? "Difunto actualizado correctamente"
-            : "Difunto creado correctamente",
+            ? "Encargado actualizado correctamente"
+            : "Encargado creado correctamente",
           variant: "success",
         });
         setForm({
-          dif_primer_nombre: "",
-          dif_segundo_nombre: "",
-          dif_primer_apellido: "",
-          dif_segundo_apellido: "",
-          dif_dpi: "",
-          dif_espacios: "",
-          dif_fecha_defuncion: "",
-          dif_fecha_entierro: "",
+          enc_primer_nombre: "",
+          enc_segundo_nombre: "",
+          enc_primer_apellido: "",
+          enc_segundo_apellido: "",
+          enc_telefono_uno: "",
+          enc_telefono_dos: "",
+          enc_dpi: "",
+          enc_direccion: "",
+          enc_panteones: "",
         });
         setEditId(null);
         setShow(false);
-        fetchDifuntos(page);
+        fetchEncargados(page);
       } else {
         setAlert({
           show: true,
-          message: "Error al guardar el difunto",
+          message: "Error al guardar el encargado",
           variant: "danger",
         });
       }
@@ -129,20 +127,20 @@ export default function Difuntos() {
   const handleDelete = async (id) => {
     if (window.confirm("¿Seguro que deseas eliminar este registro?")) {
       try {
-        const res = await fetch(`${httpEliminarDifunto}/${id}`, {
+        const res = await fetch(`${httpEliminarEncargado}/${id}`, {
           method: "DELETE",
         });
         if (res.ok) {
           setAlert({
             show: true,
-            message: "Difunto eliminado correctamente",
+            message: "Encargado eliminado correctamente",
             variant: "success",
           });
-          fetchDifuntos(page);
+          fetchEncargados(page);
         } else {
           setAlert({
             show: true,
-            message: "Error al eliminar el difunto",
+            message: "Error al eliminar el encargado",
             variant: "danger",
           });
         }
@@ -156,26 +154,23 @@ export default function Difuntos() {
     }
   };
 
-  const handleEdit = (difunto) => {
-    setForm({
-      ...difunto,
-      dif_fecha_defuncion: toInputDate(difunto.dif_fecha_defuncion),
-      dif_fecha_entierro: toInputDate(difunto.dif_fecha_entierro),
-    });
-    setEditId(difunto.dif_id);
+  const handleEdit = (encargado) => {
+    setForm({ ...encargado });
+    setEditId(encargado.enc_id);
     setShow(true);
   };
 
   const handleAdd = () => {
     setForm({
-      dif_primer_nombre: "",
-      dif_segundo_nombre: "",
-      dif_primer_apellido: "",
-      dif_segundo_apellido: "",
-      dif_dpi: "",
-      dif_espacios: "",
-      dif_fecha_defuncion: "",
-      dif_fecha_entierro: "",
+      enc_primer_nombre: "",
+      enc_segundo_nombre: "",
+      enc_primer_apellido: "",
+      enc_segundo_apellido: "",
+      enc_telefono_uno: "",
+      enc_telefono_dos: "",
+      enc_dpi: "",
+      enc_direccion: "",
+      enc_panteones: "",
     });
     setEditId(null);
     setShow(true);
@@ -192,9 +187,9 @@ export default function Difuntos() {
           {alert.message}
         </Alert>
       )}
-      <h2>Lista de Difuntos</h2>
+      <h2>Lista de Encargados</h2>
       <Button variant="success" className="mb-3" onClick={handleAdd}>
-        Agregar Difunto
+        Agregar Encargado
       </Button>
       <table className="table table-bordered table-striped">
         <thead>
@@ -203,38 +198,40 @@ export default function Difuntos() {
             <th>Segundo Nombre</th>
             <th>Primer Apellido</th>
             <th>Segundo Apellido</th>
+            <th>Teléfono 1</th>
+            <th>Teléfono 2</th>
             <th>DPI</th>
-            <th>Espacios</th>
-            <th>Fecha Defunción</th>
-            <th>Fecha Entierro</th>
+            <th>Dirección</th>
+            <th>Panteones</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {difuntos.map((d) => (
-            <tr key={d.dif_id}>
-              <td>{d.dif_primer_nombre}</td>
-              <td>{d.dif_segundo_nombre}</td>
-              <td>{d.dif_primer_apellido}</td>
-              <td>{d.dif_segundo_apellido}</td>
-              <td>{d.dif_dpi}</td>
-              <td>{d.dif_espacios}</td>
-              <td>{formatFecha(d.dif_fecha_defuncion)}</td>
-              <td>{formatFecha(d.dif_fecha_entierro)}</td>
+          {encargados.map((e) => (
+            <tr key={e.enc_id}>
+              <td>{e.enc_primer_nombre}</td>
+              <td>{e.enc_segundo_nombre}</td>
+              <td>{e.enc_primer_apellido}</td>
+              <td>{e.enc_segundo_apellido}</td>
+              <td>{e.enc_telefono_uno}</td>
+              <td>{e.enc_telefono_dos}</td>
+              <td>{e.enc_dpi}</td>
+              <td>{e.enc_direccion}</td>
+              <td>{e.enc_panteones}</td>
               <td>
                 <div className="d-flex">
                   <Button
                     variant="warning"
                     size="sm"
                     className="me-2"
-                    onClick={() => handleEdit(d)}
+                    onClick={() => handleEdit(e)}
                   >
                     <i className="bi bi-pencil-square"></i>
                   </Button>
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleDelete(d.dif_id)}
+                    onClick={() => handleDelete(e.enc_id)}
                   >
                     <i className="bi bi-trash"></i>
                   </Button>
@@ -244,6 +241,7 @@ export default function Difuntos() {
           ))}
         </tbody>
       </table>
+      {/* Paginación debajo de la tabla */}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div>
           <span>Página: </span>
@@ -291,7 +289,7 @@ export default function Difuntos() {
       <Modal show={show} onHide={() => setShow(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            {editId ? "Editar Difunto" : "Agregar Difunto"}
+            {editId ? "Editar Encargado" : "Agregar Encargado"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -299,10 +297,10 @@ export default function Difuntos() {
             <div className="col-md-6">
               <label className="form-label">Primer Nombre</label>
               <input
-                name="dif_primer_nombre"
+                name="enc_primer_nombre"
                 className="form-control"
                 placeholder="Primer Nombre"
-                value={form.dif_primer_nombre}
+                value={form.enc_primer_nombre}
                 onChange={handleChange}
                 required
               />
@@ -310,20 +308,20 @@ export default function Difuntos() {
             <div className="col-md-6">
               <label className="form-label">Segundo Nombre</label>
               <input
-                name="dif_segundo_nombre"
+                name="enc_segundo_nombre"
                 className="form-control"
                 placeholder="Segundo Nombre"
-                value={form.dif_segundo_nombre}
+                value={form.enc_segundo_nombre}
                 onChange={handleChange}
               />
             </div>
             <div className="col-md-6">
               <label className="form-label">Primer Apellido</label>
               <input
-                name="dif_primer_apellido"
+                name="enc_primer_apellido"
                 className="form-control"
                 placeholder="Primer Apellido"
-                value={form.dif_primer_apellido}
+                value={form.enc_primer_apellido}
                 onChange={handleChange}
                 required
               />
@@ -331,55 +329,65 @@ export default function Difuntos() {
             <div className="col-md-6">
               <label className="form-label">Segundo Apellido</label>
               <input
-                name="dif_segundo_apellido"
+                name="enc_segundo_apellido"
                 className="form-control"
                 placeholder="Segundo Apellido"
-                value={form.dif_segundo_apellido}
+                value={form.enc_segundo_apellido}
                 onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Teléfono 1</label>
+              <input
+                name="enc_telefono_uno"
+                className="form-control"
+                placeholder="Teléfono 1"
+                value={form.enc_telefono_uno}
+                onChange={handleChange}
+                type="number"
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Teléfono 2</label>
+              <input
+                name="enc_telefono_dos"
+                className="form-control"
+                placeholder="Teléfono 2"
+                value={form.enc_telefono_dos}
+                onChange={handleChange}
+                type="number"
               />
             </div>
             <div className="col-md-4">
               <label className="form-label">DPI</label>
               <input
-                name="dif_dpi"
+                name="enc_dpi"
                 className="form-control"
                 placeholder="DPI"
-                value={form.dif_dpi}
+                value={form.enc_dpi}
                 onChange={handleChange}
                 type="number"
               />
             </div>
-            <div className="col-md-4">
-              <label className="form-label">Espacios</label>
+            <div className="col-md-12">
+              <label className="form-label">Dirección</label>
               <input
-                name="dif_espacios"
+                name="enc_direccion"
                 className="form-control"
-                placeholder="Espacios"
-                value={form.dif_espacios}
+                placeholder="Dirección"
+                value={form.enc_direccion}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Panteones</label>
+              <input
+                name="enc_panteones"
+                className="form-control"
+                placeholder="Panteones"
+                value={form.enc_panteones}
                 onChange={handleChange}
                 type="number"
-              />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">Fecha Defunción</label>
-              <input
-                name="dif_fecha_defuncion"
-                className="form-control"
-                placeholder="Fecha Defunción"
-                value={form.dif_fecha_defuncion}
-                onChange={handleChange}
-                type="date"
-              />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">Fecha Entierro</label>
-              <input
-                name="dif_fecha_entierro"
-                className="form-control"
-                placeholder="Fecha Entierro"
-                value={form.dif_fecha_entierro}
-                onChange={handleChange}
-                type="date"
               />
             </div>
             <div className="col-12">
