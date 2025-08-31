@@ -4,3 +4,7 @@ export const API_URL =
 export const httpLogin = `${API_URL}/usuarios/login`;
 export const httpGetUsuarios = `${API_URL}/usuarios`;
 export const httpCrearUsuario = `${API_URL}/usuarios`;
+export const httpGetDifuntos = `${API_URL}/difuntos`;
+export const httpCrearDifunto = `${API_URL}/difuntos`;
+export const httpEditarDifunto = `${API_URL}/difuntos`;
+export const httpEliminarDifunto = `${API_URL}/difuntos`;
