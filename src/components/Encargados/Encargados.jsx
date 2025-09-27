@@ -241,7 +241,6 @@ export default function Encargados() {
           ))}
         </tbody>
       </table>
-      {/* Paginación debajo de la tabla */}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div>
           <span>Página: </span>

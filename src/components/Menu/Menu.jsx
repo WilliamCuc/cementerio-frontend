@@ -6,12 +6,12 @@ import "./Menu.css";
 
 export default function Menu() {
   const navigate = useNavigate();
-
+  
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
-
+  
   return (
     <>
       <Navbar expand="lg" className="menu-container custom-navbar">
@@ -34,6 +34,15 @@ export default function Menu() {
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/encargados">
                 <i className="bi bi-person-fill"></i> Encargados
+              </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/locaciones">
+                <i className="bi bi-geo-alt"></i> Locaciones
+              </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/panteones">
+                <i className="bi bi-building"></i> Panteones
+              </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/espacios">
+                <i className="bi bi-grid-3x3"></i> Espacios
               </Nav.Link>
             </Nav>
             <Nav className="ms-auto">
