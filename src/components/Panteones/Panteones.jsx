@@ -1,17 +1,17 @@
-import { formatFecha, toInputDate } from "../../utils/fechas";
+import "./Panteones.css";
 import Alert from "react-bootstrap/Alert";
 import React, { useEffect, useState } from "react";
-import { useCallback } from "react";
 import {
-  httpGetDifuntos,
-  httpCrearDifunto,
-  httpEditarDifunto,
-  httpEliminarDifunto,
+  httpGetPanteones,
+  httpCrearPanteon,
+  httpEditarPanteon,
+  httpEliminarPanteon,
+  httpGetTodasLocaciones,
 } from "../../api/config";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-export default function Difuntos() {
+export default function Panteones() {
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -27,37 +27,44 @@ export default function Difuntos() {
     }
   }, [alert.show]);
 
-  const [difuntos, setDifuntos] = useState([]);
+  const [panteones, setPanteones] = useState([]);
+  const [locaciones, setLocaciones] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [form, setForm] = useState({
-    dif_primer_nombre: "",
-    dif_segundo_nombre: "",
-    dif_primer_apellido: "",
-    dif_segundo_apellido: "",
-    dif_dpi: "",
-    dif_espacios: "",
-    dif_fecha_defuncion: "",
-    dif_fecha_entierro: "",
+    pan_no_panteon: "",
+    pan_locacion_id: "",
+    pan_capacidad_maxima: 6,
+    pan_descripcion: "",
   });
   const [editId, setEditId] = useState(null);
   const [show, setShow] = useState(false);
 
-  const fetchDifuntos = useCallback(
+  const fetchLocaciones = async () => {
+    try {
+      const res = await fetch(httpGetTodasLocaciones);
+      const data = await res.json();
+      setLocaciones(data);
+    } catch (error) {
+      console.error("Error al cargar locaciones:", error);
+    }
+  };
+
+  const fetchPanteones = React.useCallback(
     async (currentPage = page) => {
       try {
         const offset = (currentPage - 1) * pageSize;
         const res = await fetch(
-          `${httpGetDifuntos}?limit=${pageSize}&offset=${offset}`
+          `${httpGetPanteones}?limit=${pageSize}&offset=${offset}`
         );
         const data = await res.json();
-        setDifuntos(data.data);
+        setPanteones(data.data);
         setTotal(data.total);
       } catch (error) {
         setAlert({
           show: true,
-          message: "Error al cargar difuntos" + error,
+          message: "Error al cargar panteones: " + error,
           variant: "danger",
         });
       }
@@ -66,8 +73,12 @@ export default function Difuntos() {
   );
 
   useEffect(() => {
-    fetchDifuntos(page);
-  }, [page, pageSize, fetchDifuntos]);
+    fetchLocaciones();
+  }, []);
+
+  useEffect(() => {
+    fetchPanteones(page);
+  }, [page, pageSize, fetchPanteones]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -75,44 +86,35 @@ export default function Difuntos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = editId ? `${httpEditarDifunto}/${editId}` : httpCrearDifunto;
+    const url = editId ? `${httpEditarPanteon}/${editId}` : httpCrearPanteon;
     const method = editId ? "PUT" : "POST";
-    const formToSend = {
-      ...form,
-      dif_fecha_defuncion: form.dif_fecha_defuncion,
-      dif_fecha_entierro: form.dif_fecha_entierro,
-    };
     try {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formToSend),
+        body: JSON.stringify(form),
       });
       if (res.ok) {
         setAlert({
           show: true,
           message: editId
-            ? "Difunto actualizado correctamente"
-            : "Difunto creado correctamente",
+            ? "Panteón actualizado correctamente"
+            : "Panteón creado correctamente",
           variant: "success",
         });
         setForm({
-          dif_primer_nombre: "",
-          dif_segundo_nombre: "",
-          dif_primer_apellido: "",
-          dif_segundo_apellido: "",
-          dif_dpi: "",
-          dif_espacios: "",
-          dif_fecha_defuncion: "",
-          dif_fecha_entierro: "",
+          pan_no_panteon: "",
+          pan_locacion_id: "",
+          pan_capacidad_maxima: 6,
+          pan_descripcion: "",
         });
         setEditId(null);
         setShow(false);
-        fetchDifuntos(page);
+        fetchPanteones(page);
       } else {
         setAlert({
           show: true,
-          message: "Error al guardar el difunto",
+          message: "Error al guardar el panteón",
           variant: "danger",
         });
       }
@@ -128,20 +130,20 @@ export default function Difuntos() {
   const handleDelete = async (id) => {
     if (window.confirm("¿Seguro que deseas eliminar este registro?")) {
       try {
-        const res = await fetch(`${httpEliminarDifunto}/${id}`, {
+        const res = await fetch(`${httpEliminarPanteon}/${id}`, {
           method: "DELETE",
         });
         if (res.ok) {
           setAlert({
             show: true,
-            message: "Difunto eliminado correctamente",
+            message: "Panteón eliminado correctamente",
             variant: "success",
           });
-          fetchDifuntos(page);
+          fetchPanteones(page);
         } else {
           setAlert({
             show: true,
-            message: "Error al eliminar el difunto",
+            message: "Error al eliminar el panteón",
             variant: "danger",
           });
         }
@@ -155,26 +157,18 @@ export default function Difuntos() {
     }
   };
 
-  const handleEdit = (difunto) => {
-    setForm({
-      ...difunto,
-      dif_fecha_defuncion: toInputDate(difunto.dif_fecha_defuncion),
-      dif_fecha_entierro: toInputDate(difunto.dif_fecha_entierro),
-    });
-    setEditId(difunto.dif_id);
+  const handleEdit = (panteon) => {
+    setForm({ ...panteon });
+    setEditId(panteon.pan_id);
     setShow(true);
   };
 
   const handleAdd = () => {
     setForm({
-      dif_primer_nombre: "",
-      dif_segundo_nombre: "",
-      dif_primer_apellido: "",
-      dif_segundo_apellido: "",
-      dif_dpi: "",
-      dif_espacios: "",
-      dif_fecha_defuncion: "",
-      dif_fecha_entierro: "",
+      pan_no_panteon: "",
+      pan_locacion_id: "",
+      pan_capacidad_maxima: 6,
+      pan_descripcion: "",
     });
     setEditId(null);
     setShow(true);
@@ -191,49 +185,41 @@ export default function Difuntos() {
           {alert.message}
         </Alert>
       )}
-      <h2>Lista de Difuntos</h2>
+      <h2>Gestión de Panteones</h2>
       <Button variant="success" className="mb-3" onClick={handleAdd}>
-        Agregar Difunto
+        Agregar Panteón
       </Button>
       <table className="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>Primer Nombre</th>
-            <th>Segundo Nombre</th>
-            <th>Primer Apellido</th>
-            <th>Segundo Apellido</th>
-            <th>DPI</th>
-            <th>Espacios</th>
-            <th>Fecha Defunción</th>
-            <th>Fecha Entierro</th>
+            <th>No. Panteón</th>
+            <th>Locación</th>
+            <th>Capacidad Máxima</th>
+            <th>Descripción</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {difuntos.map((d) => (
-            <tr key={d.dif_id}>
-              <td>{d.dif_primer_nombre}</td>
-              <td>{d.dif_segundo_nombre}</td>
-              <td>{d.dif_primer_apellido}</td>
-              <td>{d.dif_segundo_apellido}</td>
-              <td>{d.dif_dpi}</td>
-              <td>{d.dif_espacios}</td>
-              <td>{formatFecha(d.dif_fecha_defuncion)}</td>
-              <td>{formatFecha(d.dif_fecha_entierro)}</td>
+          {panteones.map((p) => (
+            <tr key={p.pan_id}>
+              <td>{p.pan_no_panteon}</td>
+              <td>{p.loc_area || "Sin locación"}</td>
+              <td>{p.pan_capacidad_maxima}</td>
+              <td>{p.pan_descripcion}</td>
               <td>
                 <div className="d-flex">
                   <Button
                     variant="warning"
                     size="sm"
                     className="me-2"
-                    onClick={() => handleEdit(d)}
+                    onClick={() => handleEdit(p)}
                   >
                     <i className="bi bi-pencil-square"></i>
                   </Button>
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleDelete(d.dif_id)}
+                    onClick={() => handleDelete(p.pan_id)}
                   >
                     <i className="bi bi-trash"></i>
                   </Button>
@@ -243,6 +229,7 @@ export default function Difuntos() {
           ))}
         </tbody>
       </table>
+
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div>
           <span>Página: </span>
@@ -290,95 +277,58 @@ export default function Difuntos() {
       <Modal show={show} onHide={() => setShow(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            {editId ? "Editar Difunto" : "Agregar Difunto"}
+            {editId ? "Editar Panteón" : "Agregar Panteón"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit} className="row g-3">
             <div className="col-md-6">
-              <label className="form-label">Primer Nombre</label>
+              <label className="form-label">No. Panteón *</label>
               <input
-                name="dif_primer_nombre"
+                name="pan_no_panteon"
                 className="form-control"
-                placeholder="Primer Nombre"
-                value={form.dif_primer_nombre}
+                placeholder="No. Panteón"
+                value={form.pan_no_panteon}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="col-md-6">
-              <label className="form-label">Segundo Nombre</label>
+              <label className="form-label">Capacidad Máxima</label>
               <input
-                name="dif_segundo_nombre"
+                name="pan_capacidad_maxima"
                 className="form-control"
-                placeholder="Segundo Nombre"
-                value={form.dif_segundo_nombre}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Primer Apellido</label>
-              <input
-                name="dif_primer_apellido"
-                className="form-control"
-                placeholder="Primer Apellido"
-                value={form.dif_primer_apellido}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Segundo Apellido</label>
-              <input
-                name="dif_segundo_apellido"
-                className="form-control"
-                placeholder="Segundo Apellido"
-                value={form.dif_segundo_apellido}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">DPI</label>
-              <input
-                name="dif_dpi"
-                className="form-control"
-                placeholder="DPI"
-                value={form.dif_dpi}
-                onChange={handleChange}
+                placeholder="Capacidad Máxima"
                 type="number"
+                value={form.pan_capacidad_maxima}
+                onChange={handleChange}
               />
             </div>
-            <div className="col-md-4">
-              <label className="form-label">Espacios</label>
-              <input
-                name="dif_espacios"
-                className="form-control"
-                placeholder="Espacios"
-                value={form.dif_espacios}
+            <div className="col-md-12">
+              <label className="form-label">Locación</label>
+              <select
+                name="pan_locacion_id"
+                className="form-select"
+                value={form.pan_locacion_id}
                 onChange={handleChange}
-                type="number"
-              />
+              >
+                <option value="">Seleccione una locación</option>
+                {locaciones.map((loc) => (
+                  <option key={loc.loc_id} value={loc.loc_id}>
+                    {loc.loc_area}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="col-md-4">
-              <label className="form-label">Fecha Defunción</label>
-              <input
-                name="dif_fecha_defuncion"
+            <div className="col-md-12">
+              <label className="form-label">Descripción</label>
+              <textarea
+                name="pan_descripcion"
                 className="form-control"
-                placeholder="Fecha Defunción"
-                value={form.dif_fecha_defuncion}
+                placeholder="Descripción"
+                value={form.pan_descripcion}
                 onChange={handleChange}
-                type="date"
-              />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">Fecha Entierro</label>
-              <input
-                name="dif_fecha_entierro"
-                className="form-control"
-                placeholder="Fecha Entierro"
-                value={form.dif_fecha_entierro}
-                onChange={handleChange}
-                type="date"
+                rows="3"
               />
             </div>
             <div className="col-12">
