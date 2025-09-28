@@ -33,3 +33,5 @@ export const httpGetEspaciosDisponibles = `${API_URL}/espacios/disponibles`;
 export const httpCrearEspacio = `${API_URL}/espacios`;
 export const httpEditarEspacio = `${API_URL}/espacios`;
 export const httpEliminarEspacio = `${API_URL}/espacios`;
+
+export const httpGetEstados = `${API_URL}/estados`;
