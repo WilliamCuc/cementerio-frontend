@@ -7,6 +7,8 @@ import Locaciones from "./components/Locaciones/Locaciones";
 import Panteones from "./components/Panteones/Panteones";
 import Espacios from "./components/Espacios/Espacios";
 import Transacciones from "./components/Transacciones/Transacciones";
+import Reportes from "./components/Reportes/Reportes";
+import Deudores from "./components/Deudores/Deudores";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -24,6 +26,8 @@ function App() {
             <Route path="panteones" element={<Panteones />} />
             <Route path="espacios" element={<Espacios />} />
             <Route path="transacciones" element={<Transacciones />} />
+            <Route path="reportes" element={<Reportes />} />
+            <Route path="deudores" element={<Deudores />} />
           </Route>
         </Routes>
       </BrowserRouter>
