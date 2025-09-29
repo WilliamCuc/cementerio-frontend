@@ -44,6 +44,9 @@ export default function Menu() {
               <Nav.Link as={Link} to="/dashboard/espacios">
                 <i className="bi bi-grid-3x3"></i> Espacios
               </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/transacciones">
+                <i className="bi bi-cash-coin"></i> Transacciones
+              </Nav.Link>
             </Nav>
             <Nav className="ms-auto">
               <Nav.Link
