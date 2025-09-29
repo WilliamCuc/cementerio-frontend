@@ -42,3 +42,19 @@ export const httpGetResumenPagosEspacio = `${API_URL}/transacciones/resumen`;
 export const httpCrearTransaccion = `${API_URL}/transacciones`;
 export const httpEditarTransaccion = `${API_URL}/transacciones`;
 export const httpEliminarTransaccion = `${API_URL}/transacciones`;
+
+export const httpReporteResumenGeneral = `${API_URL}/reportes/resumen-general`;
+export const httpReporteIngresosPeriodo = `${API_URL}/reportes/ingresos-periodo`;
+export const httpReporteCuentasCobrar = `${API_URL}/reportes/cuentas-cobrar`;
+export const httpReporteOcupacionArea = `${API_URL}/reportes/ocupacion-area`;
+export const httpReporteDifuntosPeriodo = `${API_URL}/reportes/difuntos-periodo`;
+export const httpReporteEstadoPanteones = `${API_URL}/reportes/estado-panteones`;
+export const httpReporteMovimientosRecientes = `${API_URL}/reportes/movimientos-recientes`;
+export const httpReporteEspaciosDisponibles = `${API_URL}/reportes/espacios-disponibles`;
+export const httpReporteResumenFinanciero = `${API_URL}/reportes/resumen-financiero`;
+export const httpReporteTopDeudores = `${API_URL}/reportes/top-deudores`;
+
+export const httpGetDeudores = `${API_URL}/deudores`;
+export const httpGetDetalleDeudaEncargado = `${API_URL}/deudores/encargado`;
+export const httpGetHistorialPagosEspacio = `${API_URL}/deudores/historial`;
+export const httpExportarDeudores = `${API_URL}/deudores/exportar`;

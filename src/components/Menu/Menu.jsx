@@ -47,6 +47,12 @@ export default function Menu() {
               <Nav.Link as={Link} to="/dashboard/transacciones">
                 <i className="bi bi-cash-coin"></i> Transacciones
               </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/deudores">
+                <i className="bi bi-exclamation-triangle"></i> Deudores
+              </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/reportes">
+                <i className="bi bi-file-earmark-bar-graph"></i> Reportes
+              </Nav.Link>
             </Nav>
             <Nav className="ms-auto">
               <Nav.Link
