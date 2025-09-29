@@ -35,3 +35,10 @@ export const httpEditarEspacio = `${API_URL}/espacios`;
 export const httpEliminarEspacio = `${API_URL}/espacios`;
 
 export const httpGetEstados = `${API_URL}/estados`;
+
+export const httpGetTransacciones = `${API_URL}/transacciones`;
+export const httpGetTransaccionesPorEspacio = `${API_URL}/transacciones/espacio`;
+export const httpGetResumenPagosEspacio = `${API_URL}/transacciones/resumen`;
+export const httpCrearTransaccion = `${API_URL}/transacciones`;
+export const httpEditarTransaccion = `${API_URL}/transacciones`;
+export const httpEliminarTransaccion = `${API_URL}/transacciones`;
