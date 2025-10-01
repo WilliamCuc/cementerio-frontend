@@ -9,6 +9,7 @@ import Espacios from "./components/Espacios/Espacios";
 import Transacciones from "./components/Transacciones/Transacciones";
 import Reportes from "./components/Reportes/Reportes";
 import Deudores from "./components/Deudores/Deudores";
+import Movimientos from "./components/Movimientos/Movimientos";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -28,6 +29,7 @@ function App() {
             <Route path="transacciones" element={<Transacciones />} />
             <Route path="reportes" element={<Reportes />} />
             <Route path="deudores" element={<Deudores />} />
+            <Route path="movimientos" element={<Movimientos />} />
           </Route>
         </Routes>
       </BrowserRouter>
