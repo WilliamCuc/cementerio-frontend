@@ -53,6 +53,9 @@ export default function Menu() {
               <Nav.Link as={Link} to="/dashboard/reportes">
                 <i className="bi bi-file-earmark-bar-graph"></i> Reportes
               </Nav.Link>
+              <Nav.Link as={Link} to="/dashboard/movimientos">
+                <i class="bi bi-arrow-left-right"></i> Movimientos
+              </Nav.Link>
             </Nav>
             <Nav className="ms-auto">
               <Nav.Link

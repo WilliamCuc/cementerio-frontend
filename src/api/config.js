@@ -11,6 +11,11 @@ export const httpCrearDifunto = `${API_URL}/difuntos`;
 export const httpEditarDifunto = `${API_URL}/difuntos`;
 export const httpEliminarDifunto = `${API_URL}/difuntos`;
 
+export const httpGetMovimientos = `${API_URL}/movimientos`;
+export const httpCrearMovimiento = `${API_URL}/movimientos`;
+export const httpEditarMovimiento = `${API_URL}/movimientos`;
+export const httpEliminarMovimiento = `${API_URL}/movimientos`;
+
 export const httpGetEncargados = `${API_URL}/encargados`;
 export const httpCrearEncargado = `${API_URL}/encargados`;
 export const httpEditarEncargado = `${API_URL}/encargados`;
